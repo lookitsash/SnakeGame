@@ -27,6 +27,8 @@ for (var i = 0; i < snakeSegments; i++)
 var backgroundTexture = null;
 
 var cameraPos = clonePoint(mousePos);
+var bgXShift = 0;
+var bgYShift = 0;
 
 function gameLoop() {
     window.requestAnimationFrame(gameLoop);
@@ -38,13 +40,34 @@ function gameLoop() {
 
     var cameraOffset = getCameraOffset();
 
-    var bgCountX = Math.ceil(htmlCanvas.width / backgroundTexture.width);
-    var bgCountY = Math.ceil(htmlCanvas.height / backgroundTexture.height);
-    for (var y = 0; y < bgCountY; y++) {
-        for (var x = 0; x < bgCountX; x++) {
-            ctx.drawImage(backgroundTexture, (x * backgroundTexture.width) + cameraOffset.x, (y * backgroundTexture.height) + cameraOffset.y);
+    var bgCountX = Math.ceil(htmlCanvas.width / backgroundTexture.width)+2;
+    var bgCountY = Math.ceil(htmlCanvas.height / backgroundTexture.height)+2;
+    
+    var xShiftDirection = 0;
+    var yShiftDirection = 0;
+    var startX = bgXShift, startY = bgYShift;
+    var endX = bgCountX + startX, endY = bgCountY + startY;
+    for (var y = startY; y < endY; y++) {
+        for (var x = startX; x < endX; x++) {
+            var xPos = (x * backgroundTexture.width);
+            var yPos = (y * backgroundTexture.height);
+            var xPosScreen = xPos + cameraOffset.x;
+            var yPosScreen = yPos + cameraOffset.y;
+            ctx.drawImage(backgroundTexture, xPosScreen, yPosScreen);
+
+            if (x == startX && y == startY) {
+                if ((xPosScreen + backgroundTexture.width) < 0) xShiftDirection++;
+                if ((yPosScreen + backgroundTexture.height) < 0) yShiftDirection++;
+            }
+            else if (x == (endX - 1) && y == (endY-1)) {
+                if ((xPosScreen + backgroundTexture.width) > htmlCanvas.width) xShiftDirection--;
+                if ((yPosScreen + backgroundTexture.height) > htmlCanvas.height) yShiftDirection--;
+            }
         }
     }
+
+    bgXShift += xShiftDirection;
+    bgYShift += yShiftDirection;
 
     var offsetMousePos = clonePoint(mousePos);
     offsetMousePos.x -= cameraOffset.x;
@@ -273,5 +296,5 @@ $(document).ready(function () {
     backgroundTexture.onload = function () {
         gameLoop();
     };
-    backgroundTexture.src = 'Resources/Images/stonetexture_128.jpg';
+    backgroundTexture.src = 'Resources/Images/stonetexture_512.jpg';
 });

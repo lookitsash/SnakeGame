@@ -59,6 +59,7 @@
   <ItemGroup>
     <Content Include="Default.aspx" />
     <Content Include="Resources\Images\stonetexture_128.jpg" />
+    <Content Include="Resources\Images\stonetexture_512.jpg" />
     <Content Include="Resources\Scripts\Resources.js" />
     <Content Include="Resources\Scripts\Snake.js" />
     <Content Include="Web.config" />
